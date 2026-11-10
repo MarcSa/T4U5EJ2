@@ -1,9 +1,8 @@
-import { test, expect, describe } from 'vitest';
+import { it, expect, describe } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
 import { createRouter, createMemoryHistory } from 'vue-router';
 import App from '@/App.vue';
-import CounterComponent from '@/components/CounterComponent.vue';
-import AboutPage from '@/components/AboutPage.vue';
+import StudentList from '@/modules/students/pages/StudentList.vue';
 
 const createTestRouter = () =>
     createRouter({
@@ -11,19 +10,31 @@ const createTestRouter = () =>
         routes: [
             {
                 path: '/',
-                name: 'home',
-                component: CounterComponent,
+                component: () => import('@/modules/students/layouts/StudentsLayout.vue'),
+                children: [
+                    {
+                        path: '/',
+                        name: 'students',
+                        component: StudentList,
+                    },
+                    {
+                        path: '/student/:id',
+                        name: 'student-detail',
+                        component: () => import('@/modules/students/pages/StudentDetail.vue'),
+                        props: true,
+                    },
+                ],
             },
             {
-                path: '/about',
-                name: 'about',
-                component: AboutPage,
+                path: '/:pathMatch(.*)*',
+                name: 'NotFound',
+                component: () => import('@/common/components/NotFound.vue'),
             },
         ],
     });
 
 describe('Basic Router', () => {
-    test('should display the counter in the root "/"', async () => {
+    it('should display students list in the root "/"', async () => {
         // Arrange
         const router = createTestRouter();
         await router.push('/');
@@ -34,16 +45,17 @@ describe('Basic Router', () => {
                 plugins: [router],
             },
         });
+
         // Act
         const texto = wrapper.html();
 
         // Assert
-        expect(texto).toContain('Contador');
+        expect(texto).toContain('Listado de Alumnos');
     });
-    test('should display the page about in the route "/about"', async () => {
+    it('should display the student page in the route "/student/:id"', async () => {
         // Arrange
         const router = createTestRouter();
-        await router.push('/about');
+        await router.push('/student/1');
         await router.isReady();
 
         const wrapper = mount(App, {
@@ -51,13 +63,14 @@ describe('Basic Router', () => {
                 plugins: [router],
             },
         });
+
         // Act
         const texto = wrapper.html();
 
         // Assert
-        expect(texto).toContain('Page ABOUT');
+        expect(texto).toContain('Detalle del alumno:');
     });
-    test('should navigate to about page when link clicked', async () => {
+    it('should navigate the student page when link clicked', async () => {
         // Arrange
         const router = createTestRouter();
         await router.push('/');
@@ -66,14 +79,33 @@ describe('Basic Router', () => {
         const wrapper = mount(App, {
             global: { plugins: [router] },
         });
-        const linkAbout = wrapper.get('[data-test="link-about"]');
+        const studentLink = wrapper.get('#alum-1');
 
         // Act
-        await linkAbout.trigger('click');
+        await studentLink.trigger('click');
         await flushPromises();
 
         // Assert
-        expect(router.currentRoute.value.path).toBe('/about');
-        expect(wrapper.html()).toContain('Page ABOUT');
+        expect(router.currentRoute.value.path).toBe('/student/1');
+        expect(wrapper.html()).toContain('Detalle del alumno:');
+    });
+    it('should navigate students list when link clicked', async () => {
+        // Arrange
+        const router = createTestRouter();
+        await router.push('/student/1');
+        await router.isReady();
+
+        const wrapper = mount(App, {
+            global: { plugins: [router] },
+        });
+        const back = wrapper.get('#return-list');
+
+        // Act
+        await back.trigger('click');
+        await flushPromises();
+
+        // Assert
+        expect(router.currentRoute.value.path).toBe('/');
+        expect(wrapper.html()).toContain('Listado de Alumnos');
     });
 });

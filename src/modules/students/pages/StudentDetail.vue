@@ -21,12 +21,12 @@ watch(
 </script>
 <template>
     <section class="pt-5">
-        <RouterLink to="/" class="btn btn-secondary mb-3"
+        <RouterLink to="/" class="btn btn-secondary mb-3" id="return-list"
             ><i class="bi bi-chevron-left"></i> Volver al listado
         </RouterLink>
         <div class="card" v-if="selectedStudent">
             <div class="card-header bg-primary text-white">
-                <h1>Detalle del alunmo: {{ selectedStudent.name }}</h1>
+                <h1>Detalle del alumno: {{ selectedStudent.name }}</h1>
             </div>
             <div class="card-body">
                 <p><strong>ID:</strong> {{ selectedStudent.id }}</p>

@@ -14,7 +14,7 @@ const router = createRouter({
                     component: StudentList,
                 },
                 {
-                    path: '/:id',
+                    path: '/student/:id',
                     name: 'student-detail',
                     component: () => import('@/modules/students/pages/StudentDetail.vue'),
                     props: true,

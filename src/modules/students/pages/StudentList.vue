@@ -16,6 +16,7 @@ import { students } from '@/data/students-data';
                 v-for="student in students"
                 :key="student.id"
                 :to="{ name: 'student-detail', params: { id: student.id } }"
+                :id="'alum-' + student.id"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
             >
                 <span class="d-flex flex-column">

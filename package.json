@@ -1,5 +1,5 @@
 {
-  "name": "t4u5exemple",
+  "name": "t4u5ej2",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -16,7 +16,8 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
-    "t4u5exemple": "link:",
+    "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.2",
     "vue": "^3.5.42",
     "vue-router": "^5.3.1"
   },
